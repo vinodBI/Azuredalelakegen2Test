@@ -1,0 +1,21 @@
+{
+	"name": "AzureDataLakeStorage2",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://testdatalake2gen.dfs.core.windows.net/",
+			"tenant": "5e6289c0-3fc2-4b91-840d-cca23789470f",
+			"servicePrincipalId": "00a888c1-8270-4ed2-ac5b-b9af75d00e7b",
+			"servicePrincipalCredentialType": "ServicePrincipalKey",
+			"servicePrincipalCredential": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Link_to_dummyvault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "newest"
+			}
+		}
+	}
+}
