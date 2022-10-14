@@ -1,0 +1,378 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ADF-for-gen2DL"
+		},
+		"AzureDataLakeStorage1_servicePrincipalCredential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalCredential' of 'AzureDataLakeStorage1'"
+		},
+		"Link_to_dummyvault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://dummysrvkeyvault.vault.azure.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testdatalake2gen.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "5e6289c0-3fc2-4b91-840d-cca23789470f"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "b9ba26e1-10ca-47d2-9d95-3636f0bd38cc"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://testdatalake2gen.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "5e6289c0-3fc2-4b91-840d-cca23789470f"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "00a888c1-8270-4ed2-ac5b-b9af75d00e7b"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Link_to_dummyvault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('Link_to_dummyvault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"tenant": "[parameters('AzureDataLakeStorage1_properties_typeProperties_tenant')]",
+					"servicePrincipalId": "[parameters('AzureDataLakeStorage1_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalCredentialType": "ServicePrincipalKey",
+					"servicePrincipalCredential": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_servicePrincipalCredential')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]",
+					"tenant": "[parameters('AzureDataLakeStorage2_properties_typeProperties_tenant')]",
+					"servicePrincipalId": "[parameters('AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalCredentialType": "ServicePrincipalKey",
+					"servicePrincipalCredential": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "Link_to_dummyvault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "newest"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Link_to_dummyvault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline to separate sheets')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"dataset": {
+								"referenceName": "excelwithmultisheet",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Skipped"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup1').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Copy sheet as separate files",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "ExcelSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "excelwithmultisheets",
+											"type": "DatasetReference",
+											"parameters": {
+												"ds_Sheet": {
+													"value": "@item().Sheetnames",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "separatedsheets",
+											"type": "DatasetReference",
+											"parameters": {
+												"ds_fil_fol": {
+													"value": "@item().Sheetnames",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "pipeline to save excel sheets"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/excelwithmultisheet')]",
+				"[concat(variables('factoryId'), '/datasets/excelwithmultisheets')]",
+				"[concat(variables('factoryId'), '/datasets/separatedsheets')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/excelwithmultisheet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet2",
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Sample_Employee_data.xlsx",
+						"folderPath": "sources",
+						"fileSystem": "exlcontainer"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Sheetnames",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/excelwithmultisheets')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ds_Sheet": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": {
+						"value": "@dataset().ds_Sheet",
+						"type": "Expression"
+					},
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Sample_Employee_data.xlsx",
+						"folderPath": "sources",
+						"fileSystem": "exlcontainer"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Category",
+						"type": "String"
+					},
+					{
+						"name": "Function",
+						"type": "String"
+					},
+					{
+						"name": "Syntax",
+						"type": "String"
+					},
+					{
+						"name": "Description",
+						"type": "String"
+					},
+					{
+						"name": "Column5",
+						"type": "String"
+					},
+					{
+						"name": "Column6",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/separatedsheets')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ds_fil_fol": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().ds_fil_fol",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().ds_fil_fol",
+							"type": "Expression"
+						},
+						"fileSystem": "exlcontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
+		}
+	]
+}

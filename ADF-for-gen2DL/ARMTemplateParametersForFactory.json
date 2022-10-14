@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ADF-for-gen2DL"
+		},
+		"AzureDataLakeStorage1_servicePrincipalCredential": {
+			"value": ""
+		},
+		"Link_to_dummyvault_properties_typeProperties_baseUrl": {
+			"value": "https://dummysrvkeyvault.vault.azure.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://testdatalake2gen.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_tenant": {
+			"value": "5e6289c0-3fc2-4b91-840d-cca23789470f"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_servicePrincipalId": {
+			"value": "b9ba26e1-10ca-47d2-9d95-3636f0bd38cc"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_url": {
+			"value": "https://testdatalake2gen.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_tenant": {
+			"value": "5e6289c0-3fc2-4b91-840d-cca23789470f"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId": {
+			"value": "00a888c1-8270-4ed2-ac5b-b9af75d00e7b"
+		}
+	}
+}
