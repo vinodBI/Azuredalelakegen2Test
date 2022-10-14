@@ -38,6 +38,10 @@
 		"AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "00a888c1-8270-4ed2-ac5b-b9af75d00e7b"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/7d857603-5253-4f56-9777-b4bb3f07e8a4/resourceGroups/ADF_RG/providers/Microsoft.Storage/storageAccounts/testdatalake2gen"
 		}
 	},
 	"variables": {
@@ -372,6 +376,36 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pipeline to separate sheets",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/exlcontainer/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pipeline to separate sheets')]"
 			]
 		}
 	]

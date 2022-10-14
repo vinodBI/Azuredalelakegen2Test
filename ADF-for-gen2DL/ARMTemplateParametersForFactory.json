@@ -28,6 +28,9 @@
 		},
 		"AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId": {
 			"value": "00a888c1-8270-4ed2-ac5b-b9af75d00e7b"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"value": "/subscriptions/7d857603-5253-4f56-9777-b4bb3f07e8a4/resourceGroups/ADF_RG/providers/Microsoft.Storage/storageAccounts/testdatalake2gen"
 		}
 	}
 }
