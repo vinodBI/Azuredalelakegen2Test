@@ -1,0 +1,27 @@
+{
+	"name": "excelwithmultisheet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet2",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Sample_Employee_data.xlsx",
+				"folderPath": "sources",
+				"fileSystem": "exlcontainer"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Sheetnames",
+				"type": "String"
+			}
+		]
+	}
+}
