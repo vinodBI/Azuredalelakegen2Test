@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'AzureDataLakeStorage1'"
 		},
-		"Link_to_dummyvault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://dummysrvkeyvault.vault.azure.net/"
-		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testdatalake2gen.dfs.core.windows.net/"
@@ -39,7 +35,11 @@
 			"type": "string",
 			"defaultValue": "00a888c1-8270-4ed2-ac5b-b9af75d00e7b"
 		},
-		"trigger1_properties_typeProperties_scope": {
+		"Link_to_dummyvault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://dummysrvkeyvault.vault.azure.net/"
+		},
+		"triggertocopysheets_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7d857603-5253-4f56-9777-b4bb3f07e8a4/resourceGroups/ADF_RG/providers/Microsoft.Storage/storageAccounts/testdatalake2gen"
 		},
@@ -73,9 +73,6 @@
 					"AzureDataLakeStorage1_servicePrincipalCredential": {
 						"value": "[parameters('AzureDataLakeStorage1_servicePrincipalCredential')]"
 					},
-					"Link_to_dummyvault_properties_typeProperties_baseUrl": {
-						"value": "[parameters('Link_to_dummyvault_properties_typeProperties_baseUrl')]"
-					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
@@ -84,6 +81,9 @@
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"Link_to_dummyvault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('Link_to_dummyvault_properties_typeProperties_baseUrl')]"
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
@@ -94,8 +94,8 @@
 					"AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId')]"
 					},
-					"trigger1_properties_typeProperties_scope": {
-						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
+					"triggertocopysheets_properties_typeProperties_scope": {
+						"value": "[parameters('triggertocopysheets_properties_typeProperties_scope')]"
 					}
 				}
 			},

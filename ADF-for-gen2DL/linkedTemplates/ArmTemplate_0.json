@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'AzureDataLakeStorage1'"
 		},
-		"Link_to_dummyvault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://dummysrvkeyvault.vault.azure.net/"
-		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://testdatalake2gen.dfs.core.windows.net/"
@@ -26,6 +22,10 @@
 		"AzureDataLakeStorage1_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "b9ba26e1-10ca-47d2-9d95-3636f0bd38cc"
+		},
+		"Link_to_dummyvault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://dummysrvkeyvault.vault.azure.net/"
 		},
 		"AzureDataLakeStorage2_properties_typeProperties_url": {
 			"type": "string",
@@ -39,7 +39,7 @@
 			"type": "string",
 			"defaultValue": "00a888c1-8270-4ed2-ac5b-b9af75d00e7b"
 		},
-		"trigger1_properties_typeProperties_scope": {
+		"triggertocopysheets_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/7d857603-5253-4f56-9777-b4bb3f07e8a4/resourceGroups/ADF_RG/providers/Microsoft.Storage/storageAccounts/testdatalake2gen"
 		}
@@ -48,19 +48,6 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/Link_to_dummyvault')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('Link_to_dummyvault_properties_typeProperties_baseUrl')]"
-				}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -77,6 +64,19 @@
 						"type": "SecureString",
 						"value": "[parameters('AzureDataLakeStorage1_servicePrincipalCredential')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Link_to_dummyvault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('Link_to_dummyvault_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -379,12 +379,12 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"name": "[concat(parameters('factoryName'), '/triggertocopysheets')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Stopped",
+				"runtimeState": "Started",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -398,7 +398,7 @@
 				"typeProperties": {
 					"blobPathBeginsWith": "/exlcontainer/blobs/",
 					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
+					"scope": "[parameters('triggertocopysheets_properties_typeProperties_scope')]",
 					"events": [
 						"Microsoft.Storage.BlobCreated"
 					]
