@@ -1,0 +1,24 @@
+{
+	"name": "triggertocopysheets",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline to separate sheets",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/exlcontainer/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/7d857603-5253-4f56-9777-b4bb3f07e8a4/resourceGroups/ADF_RG/providers/Microsoft.Storage/storageAccounts/testdatalake2gen",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
