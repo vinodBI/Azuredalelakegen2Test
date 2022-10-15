@@ -85,9 +85,6 @@
 					"Link_to_dummyvault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('Link_to_dummyvault_properties_typeProperties_baseUrl')]"
 					},
-					"triggertocopysheets_properties_typeProperties_scope": {
-						"value": "[parameters('triggertocopysheets_properties_typeProperties_scope')]"
-					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
 					},
@@ -96,6 +93,9 @@
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_servicePrincipalId')]"
+					},
+					"triggertocopysheets_properties_typeProperties_scope": {
+						"value": "[parameters('triggertocopysheets_properties_typeProperties_scope')]"
 					}
 				}
 			},
