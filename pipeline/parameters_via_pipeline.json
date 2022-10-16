@@ -1,0 +1,9 @@
+{
+	"name": "parameters_via_pipeline",
+	"properties": {
+		"folder": {
+			"name": "parameters_via_pipeline"
+		},
+		"annotations": []
+	}
+}
