@@ -7,8 +7,7 @@
 		},
 		"parameters": {
 			"relativeurl": {
-				"type": "string",
-				"defaultValue": "/speakers"
+				"type": "string"
 			}
 		},
 		"annotations": [],
