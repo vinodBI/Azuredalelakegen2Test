@@ -1,0 +1,19 @@
+{
+	"name": "Apitojason",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Landing",
+				"fileSystem": "exlcontainer"
+			}
+		},
+		"schema": {}
+	}
+}
