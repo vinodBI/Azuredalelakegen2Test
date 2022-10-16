@@ -59,7 +59,7 @@
 		"parameters": {
 			"relativeurl": {
 				"type": "string",
-				"defaultValue": "/speakers"
+				"defaultValue": "https://conferenceapi.azurewebsites.net/speakers"
 			}
 		},
 		"folder": {
