@@ -1,0 +1,24 @@
+{
+	"name": "DsRestResource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LK_Srv_toRestapi",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relativeurl": {
+				"type": "string",
+				"defaultValue": "/speakers"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().relativeurl",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}
